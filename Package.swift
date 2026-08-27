@@ -45,6 +45,7 @@ let package = Package(
                 "Search",
                 .product(name: "Matching", package: "Matching"),
                 .product(name: "Position", package: "Position"),
+                .product(name: "Parsing", package: "Parsing"),
                 .product(name: "TestFlows", package: "TestFlows"),
             ]
         ),

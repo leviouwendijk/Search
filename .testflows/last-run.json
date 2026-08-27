@@ -3,12 +3,12 @@
   "failed_names" : [
 
   ],
-  "generated_at" : "2026-08-27T21:01:03Z",
-  "passed" : 5,
+  "generated_at" : "2026-08-27T22:46:36Z",
+  "passed" : 6,
   "results" : [
     {
       "display_name" : "text-search-ranges",
-      "duration_seconds" : 0.0009530782699584961,
+      "duration_seconds" : 0.001073002815246582,
       "name" : "text-search-ranges",
       "status" : "passed",
       "tags" : [
@@ -20,7 +20,7 @@
     },
     {
       "display_name" : "text-search-query-convergence",
-      "duration_seconds" : 0.00026702880859375,
+      "duration_seconds" : 0.0003000497817993164,
       "name" : "text-search-query-convergence",
       "status" : "passed",
       "tags" : [
@@ -32,7 +32,7 @@
     },
     {
       "display_name" : "text-search-fuzzy",
-      "duration_seconds" : 0.0003420114517211914,
+      "duration_seconds" : 0.0003579854965209961,
       "name" : "text-search-fuzzy",
       "status" : "passed",
       "tags" : [
@@ -43,7 +43,7 @@
     },
     {
       "display_name" : "search-frontier-convergence",
-      "duration_seconds" : 0.00030100345611572266,
+      "duration_seconds" : 0.0003299713134765625,
       "name" : "search-frontier-convergence",
       "status" : "passed",
       "tags" : [
@@ -54,7 +54,7 @@
     },
     {
       "display_name" : "search-frontier-separation",
-      "duration_seconds" : 0.0002009868621826172,
+      "duration_seconds" : 0.0002199411392211914,
       "name" : "search-frontier-separation",
       "status" : "passed",
       "tags" : [
@@ -62,9 +62,22 @@
         "search",
         "separation"
       ]
+    },
+    {
+      "display_name" : "search-structural-proof",
+      "duration_seconds" : 0.00043201446533203125,
+      "name" : "search-structural-proof",
+      "status" : "passed",
+      "tags" : [
+        "frontier",
+        "parsing",
+        "position",
+        "proof",
+        "search"
+      ]
     }
   ],
   "skipped" : 0,
   "title" : "Search flow tests",
-  "total" : 5
+  "total" : 6
 }

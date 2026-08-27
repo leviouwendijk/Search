@@ -1,5 +1,5 @@
 {
-  "originHash" : "914fb13b026061bc41fccf947b7a42148e30ff675ed13a778a99a444d24ac549",
+  "originHash" : "de285dafeab411b270e6a64d8a95745fce3ffeb19d70b0caf283eb04f4bfc4d2",
   "pins" : [
     {
       "identity" : "ansi",
@@ -43,7 +43,7 @@
       "location" : "https://github.com/leviouwendijk/Parsing.git",
       "state" : {
         "branch" : "master",
-        "revision" : "8cd4b7bdc25d590d65b803a4f3e07e4fe3756664"
+        "revision" : "b415cec83b0499158df5d0faeb760a2d4943d236"
       }
     },
     {
