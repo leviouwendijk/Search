@@ -1,0 +1,70 @@
+{
+  "failed" : 0,
+  "failed_names" : [
+
+  ],
+  "generated_at" : "2026-08-27T21:01:03Z",
+  "passed" : 5,
+  "results" : [
+    {
+      "display_name" : "text-search-ranges",
+      "duration_seconds" : 0.0009530782699584961,
+      "name" : "text-search-ranges",
+      "status" : "passed",
+      "tags" : [
+        "contains",
+        "position",
+        "search",
+        "text"
+      ]
+    },
+    {
+      "display_name" : "text-search-query-convergence",
+      "duration_seconds" : 0.00026702880859375,
+      "name" : "text-search-query-convergence",
+      "status" : "passed",
+      "tags" : [
+        "convergence",
+        "query",
+        "ranking",
+        "search"
+      ]
+    },
+    {
+      "display_name" : "text-search-fuzzy",
+      "duration_seconds" : 0.0003420114517211914,
+      "name" : "text-search-fuzzy",
+      "status" : "passed",
+      "tags" : [
+        "fuzzy",
+        "ranking",
+        "search"
+      ]
+    },
+    {
+      "display_name" : "search-frontier-convergence",
+      "duration_seconds" : 0.00030100345611572266,
+      "name" : "search-frontier-convergence",
+      "status" : "passed",
+      "tags" : [
+        "convergence",
+        "frontier",
+        "search"
+      ]
+    },
+    {
+      "display_name" : "search-frontier-separation",
+      "duration_seconds" : 0.0002009868621826172,
+      "name" : "search-frontier-separation",
+      "status" : "passed",
+      "tags" : [
+        "frontier",
+        "search",
+        "separation"
+      ]
+    }
+  ],
+  "skipped" : 0,
+  "title" : "Search flow tests",
+  "total" : 5
+}

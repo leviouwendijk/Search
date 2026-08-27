@@ -1,0 +1,13 @@
+import TestFlows
+
+enum SearchFlowSuite: TestFlowRegistry {
+    static let title = "Search flow tests"
+
+    static let flows: [TestFlow] = [
+        textRangeFlow,
+        queryConvergenceFlow,
+        fuzzyFlow,
+        frontierConvergenceFlow,
+        frontierSeparationFlow,
+    ]
+}
