@@ -189,6 +189,13 @@ private extension TextSearch {
                     against: document
                 )
 
+        case .identifier:
+            return IdentifierMatcher<SearchDocument<ID>>()
+                .match(
+                    query: query,
+                    against: document
+                )
+
         case .subsequence:
             return SubsequenceMatcher<SearchDocument<ID>>()
                 .match(
@@ -273,14 +280,6 @@ private extension TextSearch {
         document: SearchDocument<ID>,
         options: SearchOptions
     ) -> [SearchSpan] {
-        if options.strategy == .contains {
-            return containsSpans(
-                query.normalized,
-                in: document.text,
-                caseSensitive: options.caseSensitive
-            )
-        }
-
         return result.fieldResults
             .filter {
                 $0.field.name == "text"
@@ -306,91 +305,6 @@ private extension TextSearch {
             }
     }
 
-    static func containsSpans(
-        _ query: String,
-        in text: String,
-        caseSensitive: Bool
-    ) -> [SearchSpan] {
-        guard !query.isEmpty else {
-            return []
-        }
-
-        let compareOptions: String.CompareOptions = caseSensitive
-            ? []
-            : [.caseInsensitive]
-
-        var spans: [SearchSpan] = []
-        var start = text.startIndex
-        let lineTable = LineTable(
-            text: text
-        )
-
-        while start < text.endIndex,
-              let range = text.range(
-                  of: query,
-                  options: compareOptions,
-                  range: start..<text.endIndex
-              )
-        {
-            let startOffset = text.distance(
-                from: text.startIndex,
-                to: range.lowerBound
-            )
-
-            let endOffset = text.distance(
-                from: text.startIndex,
-                to: range.upperBound
-            )
-
-            let positionRange = PositionRange(
-                uncheckedStart: PositionIndex(
-                    startOffset
-                ),
-                uncheckedEnd: PositionIndex(
-                    endOffset
-                )
-            )
-
-            spans.append(
-                SearchSpan(
-                    range: positionRange,
-                    lineRange: lineRange(
-                        for: positionRange,
-                        table: lineTable
-                    )
-                )
-            )
-
-            start = range.upperBound
-        }
-
-        return spans
-    }
-
-    static func lineRange(
-        for range: PositionRange,
-        table: LineTable
-    ) -> LineRange {
-        let start = table.lineAndColumn(
-            at: range.start.offset
-        )
-
-        let inclusiveEndOffset = range.isEmpty
-            ? range.start.offset
-            : max(
-                range.start.offset,
-                range.end.offset - 1
-            )
-
-        let end = table.lineAndColumn(
-            at: inclusiveEndOffset
-        )
-
-        return LineRange(
-            uncheckedStart: start.line,
-            uncheckedEnd: end.line
-        )
-    }
 }
 
 private struct TextSearchAccumulator<ID: Hashable & Sendable>:
