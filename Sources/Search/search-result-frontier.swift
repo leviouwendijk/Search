@@ -41,20 +41,53 @@ public extension SearchResult {
             }
         }
 
-        let ranked = Ranking.select(
-            candidates,
-            options: RankingSelectionOptions(
-                order: .descending,
-                threshold: .none,
-                limit: nil
-            )
-        )
+        let semanticCandidates: [Ranked<SearchCandidate<ID>>]
 
-        let selected = diversified(
-            ranked,
-            maximumCandidates: options.maximumCandidates,
-            maximumCandidatesPerDocument: options.maximumCandidatesPerDocument
-        )
+        switch mode {
+        case .ranked:
+            let ranked = Ranking.select(
+                candidates,
+                options: RankingSelectionOptions(
+                    order: .descending,
+                    threshold: .none,
+                    limit: nil
+                )
+            )
+
+            semanticCandidates = diversified(
+                ranked,
+                maximumCandidates: nil,
+                maximumCandidatesPerDocument: options.maximumCandidatesPerDocument
+            )
+
+        case .exhaustive:
+            semanticCandidates = candidates.sorted { lhs, rhs in
+                let lhsOrder = lhs.sourceOrder ?? Int.max
+                let rhsOrder = rhs.sourceOrder ?? Int.max
+
+                if lhsOrder != rhsOrder {
+                    return lhsOrder < rhsOrder
+                }
+
+                if lhs.value.lineRange.start != rhs.value.lineRange.start {
+                    return lhs.value.lineRange.start < rhs.value.lineRange.start
+                }
+
+                return lhs.value.lineRange.end < rhs.value.lineRange.end
+            }
+        }
+
+        let selected: [Ranked<SearchCandidate<ID>>]
+
+        if let maximumCandidates = options.maximumCandidates {
+            selected = Array(
+                semanticCandidates.prefix(
+                    maximumCandidates
+                )
+            )
+        } else {
+            selected = semanticCandidates
+        }
 
     func diversified(
         _ candidates: [Ranked<SearchCandidate<ID>>],
@@ -93,6 +126,11 @@ public extension SearchResult {
     }
 
         return SearchFrontier(
+            mode: mode,
+            matchedDocumentCount: matchedDocumentCount,
+            searchedHitCount: returnedHitCount,
+            candidateCount: candidates.count,
+            totalCandidateCount: semanticCandidates.count,
             candidates: selected.map(\.value)
         )
     }

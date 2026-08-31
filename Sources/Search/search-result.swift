@@ -2,10 +2,27 @@ public struct SearchResult<ID: Hashable & Sendable>:
     Sendable,
     Hashable
 {
+    public let mode: SearchMode
     public let queries: [SearchQuery]
     public let searchedDocumentCount: Int
+    public let matchedDocumentCount: Int
     public let candidateCount: Int
     public let hits: [SearchHit<ID>]
+
+    public init(
+        mode: SearchMode = .ranked,
+        queries: [SearchQuery],
+        searchedDocumentCount: Int,
+        matchedDocumentCount: Int,
+        hits: [SearchHit<ID>]
+    ) {
+        self.mode = mode
+        self.queries = queries
+        self.searchedDocumentCount = searchedDocumentCount
+        self.matchedDocumentCount = matchedDocumentCount
+        self.candidateCount = matchedDocumentCount
+        self.hits = hits
+    }
 
     public init(
         queries: [SearchQuery],
@@ -13,14 +30,25 @@ public struct SearchResult<ID: Hashable & Sendable>:
         candidateCount: Int,
         hits: [SearchHit<ID>]
     ) {
-        self.queries = queries
-        self.searchedDocumentCount = searchedDocumentCount
-        self.candidateCount = candidateCount
-        self.hits = hits
+        self.init(
+            mode: .ranked,
+            queries: queries,
+            searchedDocumentCount: searchedDocumentCount,
+            matchedDocumentCount: candidateCount,
+            hits: hits
+        )
     }
 
     public var returnedHitCount: Int {
         hits.count
+    }
+
+    public var truncated: Bool {
+        returnedHitCount < matchedDocumentCount
+    }
+
+    public var hasMore: Bool {
+        truncated
     }
 }
 

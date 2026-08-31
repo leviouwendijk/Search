@@ -115,17 +115,47 @@ public enum TextSearch {
                 )
             }
 
-        let selected = Ranking.select(
-            candidates,
-            options: selection(
-                for: options
-            )
+        let selection = selection(
+            for: options
         )
+        let admitted = candidates.filter {
+            selection.threshold.contains(
+                $0.score
+            )
+        }
+        let selected: [Ranked<SearchHit<ID>>]
+
+        switch options.mode {
+        case .ranked:
+            selected = Ranking.select(
+                candidates,
+                options: selection
+            )
+
+        case .exhaustive:
+            let ordered = admitted.sorted { lhs, rhs in
+                let lhsOrder = lhs.sourceOrder ?? Int.max
+                let rhsOrder = rhs.sourceOrder ?? Int.max
+
+                return lhsOrder < rhsOrder
+            }
+
+            if let maximumResults = selection.limit {
+                selected = Array(
+                    ordered.prefix(
+                        maximumResults
+                    )
+                )
+            } else {
+                selected = ordered
+            }
+        }
 
         return SearchResult(
+            mode: options.mode,
             queries: queries,
             searchedDocumentCount: corpus.count,
-            candidateCount: candidates.count,
+            matchedDocumentCount: admitted.count,
             hits: selected.map(\.value)
         )
     }
