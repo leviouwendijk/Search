@@ -3,15 +3,35 @@ public struct SearchRequest:
     Codable,
     Hashable
 {
-    public let queries: [SearchQuery]
+    public let probes: [SearchProbe]
     public let options: SearchOptions
+
+    public var queries: [SearchQuery] {
+        probes.map(\.query)
+    }
+
+    public init(
+        probes: [SearchProbe],
+        options: SearchOptions = .defaults
+    ) {
+        self.probes = probes
+        self.options = options
+    }
 
     public init(
         queries: [SearchQuery],
         options: SearchOptions = .defaults
     ) {
-        self.queries = queries
-        self.options = options
+        self.init(
+            probes: queries.map { query in
+                SearchProbe(
+                    query,
+                    role: .preferred,
+                    strategy: options.strategy
+                )
+            },
+            options: options
+        )
     }
 
     public init(

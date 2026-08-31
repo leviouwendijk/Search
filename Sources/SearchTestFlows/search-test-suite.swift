@@ -6,6 +6,7 @@ enum SearchFlowSuite: TestFlowRegistry {
     static let flows: [TestFlow] = [
         textRangeFlow,
         identifierRangeFlow,
+        probeSemanticsFlow,
         queryConvergenceFlow,
         fuzzyFlow,
         frontierConvergenceFlow,

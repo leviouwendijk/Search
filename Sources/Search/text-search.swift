@@ -39,8 +39,33 @@ public enum TextSearch {
         in corpus: SearchCorpus<ID>,
         options: SearchOptions = .defaults
     ) -> SearchResult<ID> {
-        let queries = queries.filter {
+        search(
+            probes: queries.map { query in
+                SearchProbe(
+                    query,
+                    role: .preferred,
+                    strategy: options.strategy
+                )
+            },
+            in: corpus,
+            options: options
+        )
+    }
+
+    public static func search<ID: Hashable & Sendable>(
+        probes: [SearchProbe],
+        in corpus: SearchCorpus<ID>,
+        options: SearchOptions = .defaults
+    ) -> SearchResult<ID> {
+        let probes = probes.filter {
             !$0.isEmpty
+        }
+        let requiredProbeCount = probes.reduce(
+            into: 0
+        ) { count, probe in
+            if probe.role == .required {
+                count += 1
+            }
         }
 
         var accumulators = corpus.documents
@@ -52,7 +77,8 @@ public enum TextSearch {
                 )
             }
 
-        for query in queries {
+        for (probeIndex, probe) in probes.enumerated() {
+            let query = probe.query
             let matchQuery = MatchQuery(
                 query.text,
                 options: normalization(
@@ -67,6 +93,7 @@ public enum TextSearch {
                 let result = match(
                     matchQuery,
                     against: document,
+                    strategy: probe.strategy,
                     options: options
                 )
 
@@ -74,32 +101,50 @@ public enum TextSearch {
                     continue
                 }
 
-                let score = rankingScore(
-                    from: result.score,
-                    query: query
-                )
+                switch probe.role {
+                case .excluded:
+                    accumulators[index].markExcluded()
 
-                let spans = resolvedSpans(
-                    for: result,
-                    query: matchQuery,
-                    document: document,
-                    options: options
-                )
-
-                accumulators[index].append(
-                    SearchEvidence(
-                        queryID: query.id,
-                        query: query.text,
-                        strategy: options.strategy,
-                        score: score,
-                        spans: spans
+                case .required,
+                     .preferred:
+                    let score = rankingScore(
+                        from: result.score,
+                        query: query
                     )
-                )
+
+                    let spans = resolvedSpans(
+                        for: result,
+                        query: matchQuery,
+                        document: document,
+                        options: options
+                    )
+
+                    accumulators[index].append(
+                        SearchEvidence(
+                            queryID: query.id,
+                            query: query.text,
+                            role: probe.role,
+                            strategy: probe.strategy,
+                            score: score,
+                            spans: spans
+                        )
+                    )
+
+                    if probe.role == .required {
+                        accumulators[index].markRequired(
+                            probeIndex
+                        )
+                    }
+                }
             }
         }
 
         let candidates = accumulators
-            .filter(\.didMatch)
+            .filter {
+                $0.isAdmitted(
+                    requiredProbeCount: requiredProbeCount
+                )
+            }
             .map { accumulator in
                 let score = accumulator.score
                 let hit = SearchHit(
@@ -153,7 +198,7 @@ public enum TextSearch {
 
         return SearchResult(
             mode: options.mode,
-            queries: queries,
+            probes: probes,
             searchedDocumentCount: corpus.count,
             matchedDocumentCount: admitted.count,
             hits: selected.map(\.value)
@@ -165,9 +210,10 @@ private extension TextSearch {
     static func match<ID: Hashable & Sendable>(
         _ query: MatchQuery,
         against document: SearchDocument<ID>,
+        strategy: SearchStrategy,
         options: SearchOptions
     ) -> MatchResult<ID> {
-        switch options.strategy {
+        switch strategy {
         case .exact:
             return ExactMatcher<SearchDocument<ID>>()
                 .match(
@@ -313,6 +359,8 @@ private struct TextSearchAccumulator<ID: Hashable & Sendable>:
     let documentID: ID
     let sourceOrder: Int
     var evidence: [SearchEvidence] = []
+    var matchedRequiredProbeIndices: Set<Int> = []
+    var matchedExcludedProbe = false
 
     var didMatch: Bool {
         !evidence.isEmpty
@@ -331,11 +379,31 @@ private struct TextSearchAccumulator<ID: Hashable & Sendable>:
         )
     }
 
+    func isAdmitted(
+        requiredProbeCount: Int
+    ) -> Bool {
+        !matchedExcludedProbe
+            && matchedRequiredProbeIndices.count == requiredProbeCount
+            && didMatch
+    }
+
     mutating func append(
         _ evidence: SearchEvidence
     ) {
         self.evidence.append(
             evidence
         )
+    }
+
+    mutating func markRequired(
+        _ probeIndex: Int
+    ) {
+        matchedRequiredProbeIndices.insert(
+            probeIndex
+        )
+    }
+
+    mutating func markExcluded() {
+        matchedExcludedProbe = true
     }
 }

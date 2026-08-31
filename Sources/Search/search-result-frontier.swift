@@ -160,6 +160,7 @@ private extension SearchResult {
     struct EvidenceKey: Hashable {
         let queryID: String?
         let query: String
+        let role: SearchProbeRole
         let strategy: SearchStrategy
     }
 
@@ -174,6 +175,7 @@ private extension SearchResult {
                         evidence: SearchEvidence(
                             queryID: evidence.queryID,
                             query: evidence.query,
+                            role: evidence.role,
                             strategy: evidence.strategy,
                             score: evidence.score,
                             spans: [
@@ -263,6 +265,7 @@ private extension SearchResult {
             let key = EvidenceKey(
                 queryID: item.queryID,
                 query: item.query,
+                role: item.role,
                 strategy: item.strategy
             )
 
@@ -277,6 +280,7 @@ private extension SearchResult {
             values[key] = SearchEvidence(
                 queryID: existing.queryID,
                 query: existing.query,
+                role: existing.role,
                 strategy: existing.strategy,
                 score: existing.score,
                 spans: (existing.spans + item.spans)

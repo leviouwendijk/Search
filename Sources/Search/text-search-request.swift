@@ -4,7 +4,7 @@ public extension TextSearch {
         in corpus: SearchCorpus<ID>
     ) -> SearchResult<ID> {
         search(
-            request.queries,
+            probes: request.probes,
             in: corpus,
             options: request.options
         )
