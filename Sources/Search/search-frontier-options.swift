@@ -6,11 +6,13 @@ public struct SearchFrontierOptions:
     public var mergeDistanceLines: Int
     public var maximumCandidates: Int?
     public var maximumCandidatesPerDocument: Int?
+    public var offset: Int
 
     public init(
         mergeDistanceLines: Int = 3,
         maximumCandidates: Int? = 16,
-        maximumCandidatesPerDocument: Int? = nil
+        maximumCandidatesPerDocument: Int? = nil,
+        offset: Int = 0
     ) {
         self.mergeDistanceLines = max(
             0,
@@ -28,6 +30,10 @@ public struct SearchFrontierOptions:
                 $0
             )
         }
+        self.offset = max(
+            0,
+            offset
+        )
     }
 
     public static let defaults: Self = .init()

@@ -77,16 +77,25 @@ public extension SearchResult {
             }
         }
 
+        let pageStart = min(
+            options.offset,
+            semanticCandidates.count
+        )
+        let page = semanticCandidates.dropFirst(
+            pageStart
+        )
         let selected: [Ranked<SearchCandidate<ID>>]
 
         if let maximumCandidates = options.maximumCandidates {
             selected = Array(
-                semanticCandidates.prefix(
+                page.prefix(
                     maximumCandidates
                 )
             )
         } else {
-            selected = semanticCandidates
+            selected = Array(
+                page
+            )
         }
 
     func diversified(
@@ -129,8 +138,9 @@ public extension SearchResult {
             mode: mode,
             matchedDocumentCount: matchedDocumentCount,
             searchedHitCount: returnedHitCount,
-            candidateCount: candidates.count,
+            discoveredCandidateCount: candidates.count,
             totalCandidateCount: semanticCandidates.count,
+            offset: options.offset,
             candidates: selected.map(\.value)
         )
     }

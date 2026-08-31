@@ -88,7 +88,7 @@ extension SearchFlowSuite {
                 )
 
                 try Expect.equal(
-                    full.candidateCount,
+                    full.discoveredCandidateCount,
                     3,
                     "ranked discovered candidate count"
                 )
@@ -165,7 +165,7 @@ extension SearchFlowSuite {
                     "exhaustive document order is deterministic"
                 )
                 try Expect.equal(
-                    full.candidateCount,
+                    full.discoveredCandidateCount,
                     3,
                     "exhaustive discovered candidate count"
                 )
@@ -205,6 +205,178 @@ extension SearchFlowSuite {
                     bounded.hasMore,
                     true,
                     "exhaustive bounded delivery reports more candidates"
+                )
+            }
+
+            Step(
+                "frontier pagination slices the deterministic semantic candidate universe"
+            ) {
+                let rankedResult = TextSearch.search(
+                    queries,
+                    in: corpus,
+                    options: SearchOptions(
+                        mode: .ranked,
+                        strategy: .contains,
+                        caseSensitive: true,
+                        minimumScore: 1,
+                        maximumResults: nil
+                    )
+                )
+                let rankedFull = rankedResult.frontier(
+                    options: SearchFrontierOptions(
+                        mergeDistanceLines: 0,
+                        maximumCandidates: nil,
+                        maximumCandidatesPerDocument: 1
+                    )
+                )
+                let rankedFirst = rankedResult.frontier(
+                    options: SearchFrontierOptions(
+                        mergeDistanceLines: 0,
+                        maximumCandidates: 1,
+                        maximumCandidatesPerDocument: 1,
+                        offset: 0
+                    )
+                )
+                let rankedSecond = rankedResult.frontier(
+                    options: SearchFrontierOptions(
+                        mergeDistanceLines: 0,
+                        maximumCandidates: 1,
+                        maximumCandidatesPerDocument: 1,
+                        offset: 1
+                    )
+                )
+
+                try Expect.equal(
+                    rankedFirst.candidates.map(\.documentID),
+                    [
+                        "dominant",
+                    ],
+                    "ranked first page preserves semantic ordering"
+                )
+                try Expect.equal(
+                    rankedFirst.nextOffset ?? -1,
+                    1,
+                    "ranked first page exposes continuation offset"
+                )
+                try Expect.equal(
+                    rankedFirst.hasMore,
+                    true,
+                    "ranked first page reports a later page"
+                )
+                try Expect.equal(
+                    rankedSecond.candidates.map(\.documentID),
+                    [
+                        "secondary",
+                    ],
+                    "ranked second page resumes after the first page"
+                )
+                try Expect.equal(
+                    rankedSecond.nextOffset == nil,
+                    true,
+                    "ranked final page has no continuation offset"
+                )
+                try Expect.equal(
+                    rankedSecond.hasMore,
+                    false,
+                    "ranked final page reports no later page"
+                )
+                try Expect.equal(
+                    rankedSecond.truncated,
+                    true,
+                    "ranked final continuation page remains a partial response"
+                )
+                try Expect.equal(
+                    rankedFirst.discoveredCandidateCount,
+                    rankedSecond.discoveredCandidateCount,
+                    "ranked discovered candidate count is stable across pages"
+                )
+                try Expect.equal(
+                    rankedFirst.totalCandidateCount,
+                    rankedSecond.totalCandidateCount,
+                    "ranked semantic candidate count is stable across pages"
+                )
+                try Expect.equal(
+                    rankedFirst.candidates.map(\.documentID)
+                        + rankedSecond.candidates.map(\.documentID),
+                    rankedFull.candidates.map(\.documentID),
+                    "ranked pages reconstruct the full semantic universe"
+                )
+
+                let exhaustiveResult = TextSearch.search(
+                    queries,
+                    in: corpus,
+                    options: SearchOptions(
+                        mode: .exhaustive,
+                        strategy: .contains,
+                        caseSensitive: true,
+                        minimumScore: 1,
+                        maximumResults: nil
+                    )
+                )
+                let exhaustiveFull = exhaustiveResult.frontier(
+                    options: SearchFrontierOptions(
+                        mergeDistanceLines: 0,
+                        maximumCandidates: nil,
+                        maximumCandidatesPerDocument: 1
+                    )
+                )
+                let exhaustiveFirst = exhaustiveResult.frontier(
+                    options: SearchFrontierOptions(
+                        mergeDistanceLines: 0,
+                        maximumCandidates: 2,
+                        maximumCandidatesPerDocument: 1,
+                        offset: 0
+                    )
+                )
+                let exhaustiveSecond = exhaustiveResult.frontier(
+                    options: SearchFrontierOptions(
+                        mergeDistanceLines: 0,
+                        maximumCandidates: 2,
+                        maximumCandidatesPerDocument: 1,
+                        offset: 2
+                    )
+                )
+
+                try Expect.equal(
+                    exhaustiveFirst.candidates.map(\.documentID),
+                    [
+                        "dominant",
+                        "dominant",
+                    ],
+                    "exhaustive first page retains repeated source regions"
+                )
+                try Expect.equal(
+                    exhaustiveFirst.nextOffset ?? -1,
+                    2,
+                    "exhaustive first page exposes continuation offset"
+                )
+                try Expect.equal(
+                    exhaustiveSecond.candidates.map(\.documentID),
+                    [
+                        "secondary",
+                    ],
+                    "exhaustive second page resumes after two regions"
+                )
+                try Expect.equal(
+                    exhaustiveSecond.hasMore,
+                    false,
+                    "exhaustive final page reports no later page"
+                )
+                try Expect.equal(
+                    exhaustiveSecond.nextOffset == nil,
+                    true,
+                    "exhaustive final page has no continuation offset"
+                )
+                try Expect.equal(
+                    exhaustiveSecond.truncated,
+                    true,
+                    "exhaustive final continuation page remains a partial response"
+                )
+                try Expect.equal(
+                    exhaustiveFirst.candidates.map(\.documentID)
+                        + exhaustiveSecond.candidates.map(\.documentID),
+                    exhaustiveFull.candidates.map(\.documentID),
+                    "exhaustive pages reconstruct the full semantic universe"
                 )
             }
 

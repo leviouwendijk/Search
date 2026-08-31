@@ -5,16 +5,18 @@ public struct SearchFrontier<ID: Hashable & Sendable>:
     public let mode: SearchMode
     public let matchedDocumentCount: Int
     public let searchedHitCount: Int
-    public let candidateCount: Int
+    public let discoveredCandidateCount: Int
     public let totalCandidateCount: Int
+    public let offset: Int
     public let candidates: [SearchCandidate<ID>]
 
     public init(
         mode: SearchMode = .ranked,
         matchedDocumentCount: Int? = nil,
         searchedHitCount: Int? = nil,
-        candidateCount: Int? = nil,
+        discoveredCandidateCount: Int? = nil,
         totalCandidateCount: Int? = nil,
+        offset: Int = 0,
         candidates: [SearchCandidate<ID>]
     ) {
         let representedDocumentCount = Set(
@@ -30,13 +32,17 @@ public struct SearchFrontier<ID: Hashable & Sendable>:
             0,
             searchedHitCount ?? representedDocumentCount
         )
-        self.candidateCount = max(
+        self.discoveredCandidateCount = max(
             candidates.count,
-            candidateCount ?? candidates.count
+            discoveredCandidateCount ?? candidates.count
         )
         self.totalCandidateCount = max(
             candidates.count,
             totalCandidateCount ?? candidates.count
+        )
+        self.offset = max(
+            0,
+            offset
         )
         self.candidates = candidates
     }
@@ -49,13 +55,29 @@ public struct SearchFrontier<ID: Hashable & Sendable>:
         searchedHitCount < matchedDocumentCount
     }
 
-    public var truncated: Bool {
-        searchWasTruncated
-            || returnedCandidateCount < totalCandidateCount
+    public var hasMore: Bool {
+        guard offset < totalCandidateCount else {
+            return false
+        }
+
+        return returnedCandidateCount
+            < totalCandidateCount - offset
     }
 
-    public var hasMore: Bool {
-        truncated
+    public var nextOffset: Int? {
+        guard hasMore,
+              returnedCandidateCount > 0
+        else {
+            return nil
+        }
+
+        return offset + returnedCandidateCount
+    }
+
+    public var truncated: Bool {
+        searchWasTruncated
+            || (totalCandidateCount > 0 && offset > 0)
+            || hasMore
     }
 
     public var isEmpty: Bool {
