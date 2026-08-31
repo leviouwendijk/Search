@@ -3,12 +3,12 @@
   "failed_names" : [
 
   ],
-  "generated_at" : "2026-08-27T22:46:36Z",
-  "passed" : 6,
+  "generated_at" : "2026-08-31T08:55:34Z",
+  "passed" : 7,
   "results" : [
     {
       "display_name" : "text-search-ranges",
-      "duration_seconds" : 0.001073002815246582,
+      "duration_seconds" : 0.0008929967880249023,
       "name" : "text-search-ranges",
       "status" : "passed",
       "tags" : [
@@ -20,7 +20,7 @@
     },
     {
       "display_name" : "text-search-query-convergence",
-      "duration_seconds" : 0.0003000497817993164,
+      "duration_seconds" : 0.0008409023284912109,
       "name" : "text-search-query-convergence",
       "status" : "passed",
       "tags" : [
@@ -32,7 +32,7 @@
     },
     {
       "display_name" : "text-search-fuzzy",
-      "duration_seconds" : 0.0003579854965209961,
+      "duration_seconds" : 0.0004069805145263672,
       "name" : "text-search-fuzzy",
       "status" : "passed",
       "tags" : [
@@ -43,7 +43,7 @@
     },
     {
       "display_name" : "search-frontier-convergence",
-      "duration_seconds" : 0.0003299713134765625,
+      "duration_seconds" : 0.0003390312194824219,
       "name" : "search-frontier-convergence",
       "status" : "passed",
       "tags" : [
@@ -54,7 +54,7 @@
     },
     {
       "display_name" : "search-frontier-separation",
-      "duration_seconds" : 0.0002199411392211914,
+      "duration_seconds" : 0.0002549886703491211,
       "name" : "search-frontier-separation",
       "status" : "passed",
       "tags" : [
@@ -64,8 +64,19 @@
       ]
     },
     {
+      "display_name" : "search-frontier-document-diversity",
+      "duration_seconds" : 0.0007380247116088867,
+      "name" : "search-frontier-document-diversity",
+      "status" : "passed",
+      "tags" : [
+        "diversity",
+        "frontier",
+        "search"
+      ]
+    },
+    {
       "display_name" : "search-structural-proof",
-      "duration_seconds" : 0.00043201446533203125,
+      "duration_seconds" : 0.0008069276809692383,
       "name" : "search-structural-proof",
       "status" : "passed",
       "tags" : [
@@ -79,5 +90,5 @@
   ],
   "skipped" : 0,
   "title" : "Search flow tests",
-  "total" : 6
+  "total" : 7
 }

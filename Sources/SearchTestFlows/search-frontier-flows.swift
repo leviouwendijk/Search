@@ -151,4 +151,78 @@ extension SearchFlowSuite {
             }
         }
     }
+
+    static var frontierDocumentDiversityFlow: TestFlow {
+        TestFlow(
+            "search-frontier-document-diversity",
+            tags: [
+                "search",
+                "frontier",
+                "diversity",
+            ]
+        ) {
+            Step(
+                "optional per-document cap preserves globally ranked diversity"
+            ) {
+                let corpus = SearchCorpus(
+                    SearchDocument(
+                        id: "dominant",
+                        text: """
+                        needle
+                        gap
+                        needle
+                        gap
+                        needle
+                        """
+                    ),
+                    SearchDocument(
+                        id: "secondary",
+                        text: "needle"
+                    )
+                )
+
+                let result = TextSearch.search(
+                    "needle",
+                    in: corpus,
+                    options: SearchOptions(
+                        strategy: .contains,
+                        caseSensitive: true
+                    )
+                )
+
+                let unrestricted = result.frontier(
+                    options: SearchFrontierOptions(
+                        mergeDistanceLines: 0,
+                        maximumCandidates: 2
+                    )
+                )
+
+                try Expect.equal(
+                    unrestricted.candidates.map(\.documentID),
+                    [
+                        "dominant",
+                        "dominant",
+                    ],
+                    "frontier without diversity cap preserves global ranking"
+                )
+
+                let diversified = result.frontier(
+                    options: SearchFrontierOptions(
+                        mergeDistanceLines: 0,
+                        maximumCandidates: 2,
+                        maximumCandidatesPerDocument: 1
+                    )
+                )
+
+                try Expect.equal(
+                    diversified.candidates.map(\.documentID),
+                    [
+                        "dominant",
+                        "secondary",
+                    ],
+                    "frontier diversity admits another ranked document"
+                )
+            }
+        }
+    }
 }

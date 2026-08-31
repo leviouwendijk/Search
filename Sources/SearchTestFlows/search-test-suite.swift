@@ -9,6 +9,7 @@ enum SearchFlowSuite: TestFlowRegistry {
         fuzzyFlow,
         frontierConvergenceFlow,
         frontierSeparationFlow,
+        frontierDocumentDiversityFlow,
         structuralProofFlow,
     ]
 }

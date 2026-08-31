@@ -41,14 +41,56 @@ public extension SearchResult {
             }
         }
 
-        let selected = Ranking.select(
+        let ranked = Ranking.select(
             candidates,
             options: RankingSelectionOptions(
                 order: .descending,
                 threshold: .none,
-                limit: options.maximumCandidates
+                limit: nil
             )
         )
+
+        let selected = diversified(
+            ranked,
+            maximumCandidates: options.maximumCandidates,
+            maximumCandidatesPerDocument: options.maximumCandidatesPerDocument
+        )
+
+    func diversified(
+        _ candidates: [Ranked<SearchCandidate<ID>>],
+        maximumCandidates: Int?,
+        maximumCandidatesPerDocument: Int?
+    ) -> [Ranked<SearchCandidate<ID>>] {
+        var selected: [Ranked<SearchCandidate<ID>>] = []
+        var documentCounts: [ID: Int] = [:]
+
+        for candidate in candidates {
+            if let maximumCandidates,
+               selected.count >= maximumCandidates
+            {
+                break
+            }
+
+            if let maximumCandidatesPerDocument {
+                let count = documentCounts[
+                    candidate.value.documentID,
+                    default: 0
+                ]
+
+                guard count < maximumCandidatesPerDocument else {
+                    continue
+                }
+
+                documentCounts[candidate.value.documentID] = count + 1
+            }
+
+            selected.append(
+                candidate
+            )
+        }
+
+        return selected
+    }
 
         return SearchFrontier(
             candidates: selected.map(\.value)
