@@ -12,11 +12,20 @@ public extension SearchResult {
             let seeds = frontierSeeds(
                 for: hit
             )
-
-            for accumulator in coalesced(
+            let requiresRequiredAnchor = hit.evidence.contains { evidence in
+                evidence.role == .required
+            }
+            let accumulators = coalesced(
                 seeds,
                 mergeDistanceLines: options.mergeDistanceLines
-            ) {
+            ).filter { accumulator in
+                !requiresRequiredAnchor
+                    || accumulator.evidence.contains { evidence in
+                        evidence.role == .required
+                    }
+            }
+
+            for accumulator in accumulators {
                 let evidence = mergedEvidence(
                     accumulator.evidence
                 )

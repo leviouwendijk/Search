@@ -313,6 +313,108 @@ extension SearchFlowSuite {
                     "frontier evidence preserves independently selected strategies"
                 )
             }
+
+            Step(
+                "required evidence anchors frontier regions without suppressing nearby preferred evidence"
+            ) {
+                let corpus = SearchCorpus(
+                    SearchDocument(
+                        id: "anchored",
+                        text: """
+                        Anchor
+                        nearby
+                        gap
+                        gap
+                        distant
+                        """
+                    )
+                )
+
+                let anchored = TextSearch.search(
+                    probes: [
+                        SearchProbe(
+                            "Anchor",
+                            id: "anchor",
+                            role: .required,
+                            strategy: .identifier
+                        ),
+                        SearchProbe(
+                            "nearby",
+                            id: "nearby",
+                            role: .preferred,
+                            strategy: .identifier
+                        ),
+                        SearchProbe(
+                            "distant",
+                            id: "distant",
+                            weight: 8,
+                            role: .preferred,
+                            strategy: .identifier
+                        ),
+                    ],
+                    in: corpus,
+                    options: SearchOptions(
+                        mode: .exhaustive,
+                        caseSensitive: true,
+                        maximumResults: nil
+                    )
+                )
+                let anchoredFrontier = anchored.frontier(
+                    options: SearchFrontierOptions(
+                        mergeDistanceLines: 1,
+                        maximumCandidates: nil
+                    )
+                )
+
+                try Expect.equal(
+                    anchoredFrontier.count,
+                    1,
+                    "distant preferred evidence does not create an unanchored frontier candidate"
+                )
+                try Expect.equal(
+                    anchoredFrontier.candidates[0].evidence.compactMap(\.queryID),
+                    [
+                        "anchor",
+                        "nearby",
+                    ],
+                    "nearby preferred evidence still enriches the required-anchored candidate"
+                )
+
+                let preferredOnly = TextSearch.search(
+                    probes: [
+                        SearchProbe(
+                            "nearby",
+                            id: "nearby",
+                            role: .preferred,
+                            strategy: .identifier
+                        ),
+                        SearchProbe(
+                            "distant",
+                            id: "distant",
+                            role: .preferred,
+                            strategy: .identifier
+                        ),
+                    ],
+                    in: corpus,
+                    options: SearchOptions(
+                        mode: .exhaustive,
+                        caseSensitive: true,
+                        maximumResults: nil
+                    )
+                )
+                let preferredOnlyFrontier = preferredOnly.frontier(
+                    options: SearchFrontierOptions(
+                        mergeDistanceLines: 1,
+                        maximumCandidates: nil
+                    )
+                )
+
+                try Expect.equal(
+                    preferredOnlyFrontier.count,
+                    2,
+                    "preferred-only searches continue to seed independent frontier regions"
+                )
+            }
         }
     }
 }
