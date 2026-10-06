@@ -223,6 +223,47 @@ extension SearchTestSuite {
                     "compiled grammar proof reuses the preselected frontier without reinterpreting grammar semantics"
                 )
             }
+
+            Test(
+                "zero-accepting cardinality preserves candidates that lack required anchors"
+            ) {
+                let corpus = SearchCorpus(
+                    SearchDocument(
+                        id: "matching",
+                        text: "needle"
+                    ),
+                    SearchDocument(
+                        id: "missing",
+                        text: "other"
+                    )
+                )
+                let specification = StructuredParser.Specification.literal(
+                    "needle"
+                )
+                let proof = try StructuralSearch.prove(
+                    in: corpus,
+                    with: specification,
+                    requiring: .atMost(0)
+                )
+
+                try Expect.equal(
+                    proof.candidateCount,
+                    2,
+                    "cardinality that accepts zero matches must evaluate the full corpus"
+                )
+                try Expect.equal(
+                    proof.proofs.map(\.documentID),
+                    [
+                        "missing",
+                    ],
+                    "candidate without the required literal can satisfy a zero-match structural proof"
+                )
+                try Expect.equal(
+                    proof.matchCount,
+                    0,
+                    "accepted zero-match proof preserves structural cardinality semantics"
+                )
+            }
         }
     }
 }

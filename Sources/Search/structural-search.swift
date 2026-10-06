@@ -112,10 +112,20 @@ public enum StructuralSearch {
         with parser: StructuredParser.Compiled,
         requiring cardinality: StructuredParser.Cardinality = .atLeast(1)
     ) throws -> SearchProofResult<ID> {
-        try frontier(
-            in: corpus,
-            with: parser
-        ).prove(
+        let proofFrontier: SearchFrontier<ID>
+
+        if cardinality.accepts(0) {
+            proofFrontier = fullDocumentFrontier(
+                corpus
+            )
+        } else {
+            proofFrontier = frontier(
+                in: corpus,
+                with: parser
+            )
+        }
+
+        return try proofFrontier.prove(
             in: corpus,
             with: parser,
             requiring: cardinality
