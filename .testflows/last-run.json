@@ -1,14 +1,14 @@
 {
-  "failed" : 0,
+  "failed" : 1,
   "failed_names" : [
-
+    "lexical-search-patterns"
   ],
-  "generated_at" : "2026-08-31T08:55:34Z",
-  "passed" : 7,
+  "generated_at" : "2026-10-06T19:49:23Z",
+  "passed" : 10,
   "results" : [
     {
       "display_name" : "text-search-ranges",
-      "duration_seconds" : 0.0008929967880249023,
+      "duration_seconds" : 0.002732992172241211,
       "name" : "text-search-ranges",
       "status" : "passed",
       "tags" : [
@@ -19,8 +19,33 @@
       ]
     },
     {
+      "display_name" : "text-search-identifier-ranges",
+      "duration_seconds" : 0.0003230571746826172,
+      "name" : "text-search-identifier-ranges",
+      "status" : "passed",
+      "tags" : [
+        "identifier",
+        "position",
+        "search",
+        "text"
+      ]
+    },
+    {
+      "display_name" : "search-rich-probe-semantics",
+      "duration_seconds" : 0.0006380081176757812,
+      "name" : "search-rich-probe-semantics",
+      "status" : "passed",
+      "tags" : [
+        "excluded",
+        "preferred",
+        "probe",
+        "required",
+        "search"
+      ]
+    },
+    {
       "display_name" : "text-search-query-convergence",
-      "duration_seconds" : 0.0008409023284912109,
+      "duration_seconds" : 0.00020897388458251953,
       "name" : "text-search-query-convergence",
       "status" : "passed",
       "tags" : [
@@ -32,7 +57,7 @@
     },
     {
       "display_name" : "text-search-fuzzy",
-      "duration_seconds" : 0.0004069805145263672,
+      "duration_seconds" : 0.0003160238265991211,
       "name" : "text-search-fuzzy",
       "status" : "passed",
       "tags" : [
@@ -43,7 +68,7 @@
     },
     {
       "display_name" : "search-frontier-convergence",
-      "duration_seconds" : 0.0003390312194824219,
+      "duration_seconds" : 0.0001900196075439453,
       "name" : "search-frontier-convergence",
       "status" : "passed",
       "tags" : [
@@ -54,7 +79,7 @@
     },
     {
       "display_name" : "search-frontier-separation",
-      "duration_seconds" : 0.0002549886703491211,
+      "duration_seconds" : 0.00019598007202148438,
       "name" : "search-frontier-separation",
       "status" : "passed",
       "tags" : [
@@ -65,7 +90,7 @@
     },
     {
       "display_name" : "search-frontier-document-diversity",
-      "duration_seconds" : 0.0007380247116088867,
+      "duration_seconds" : 0.0002340078353881836,
       "name" : "search-frontier-document-diversity",
       "status" : "passed",
       "tags" : [
@@ -75,8 +100,33 @@
       ]
     },
     {
+      "display_name" : "search-completeness-modes",
+      "duration_seconds" : 0.0005370378494262695,
+      "name" : "search-completeness-modes",
+      "status" : "passed",
+      "tags" : [
+        "completeness",
+        "delivery",
+        "exhaustive",
+        "ranked",
+        "search"
+      ]
+    },
+    {
+      "display_name" : "lexical-search-patterns",
+      "duration_seconds" : 0.0019099712371826172,
+      "name" : "lexical-search-patterns",
+      "status" : "failed",
+      "tags" : [
+        "lexical",
+        "parsing",
+        "position",
+        "search"
+      ]
+    },
+    {
       "display_name" : "search-structural-proof",
-      "duration_seconds" : 0.0008069276809692383,
+      "duration_seconds" : 0.0005500316619873047,
       "name" : "search-structural-proof",
       "status" : "passed",
       "tags" : [
@@ -90,5 +140,5 @@
   ],
   "skipped" : 0,
   "title" : "Search flow tests",
-  "total" : 7
+  "total" : 11
 }

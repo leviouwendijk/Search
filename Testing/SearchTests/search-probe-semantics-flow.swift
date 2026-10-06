@@ -1,9 +1,9 @@
 import Search
-import TestFlows
+import Testing
 
-extension SearchFlowSuite {
-    static var probeSemanticsFlow: TestFlow {
-        TestFlow(
+extension SearchTestSuite {
+    static var probeSemanticsSuite: TestSuite {
+        TestSuite(
             "search-rich-probe-semantics",
             tags: [
                 "search",
@@ -13,7 +13,7 @@ extension SearchFlowSuite {
                 "excluded",
             ]
         ) {
-            Step(
+            Test(
                 "required preferred and excluded probes control document admission independently"
             ) {
                 let corpus = SearchCorpus(
@@ -122,7 +122,7 @@ extension SearchFlowSuite {
                 )
             }
 
-            Step(
+            Test(
                 "preferred evidence ranks stronger documents without becoming an admission requirement"
             ) {
                 let corpus = SearchCorpus(
@@ -172,7 +172,7 @@ extension SearchFlowSuite {
                 )
             }
 
-            Step(
+            Test(
                 "excluded-only searches do not manufacture evidence-free hits"
             ) {
                 let corpus = SearchCorpus(
@@ -209,7 +209,7 @@ extension SearchFlowSuite {
                 )
             }
 
-            Step(
+            Test(
                 "legacy query requests remain preferred probes using the shared option strategy"
             ) {
                 let request = SearchRequest(
@@ -241,7 +241,7 @@ extension SearchFlowSuite {
                 )
             }
 
-            Step(
+            Test(
                 "frontier convergence preserves probe role and strategy provenance"
             ) {
                 let corpus = SearchCorpus(
@@ -314,7 +314,7 @@ extension SearchFlowSuite {
                 )
             }
 
-            Step(
+            Test(
                 "required evidence anchors frontier regions without suppressing nearby preferred evidence"
             ) {
                 let corpus = SearchCorpus(

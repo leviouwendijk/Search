@@ -1,10 +1,10 @@
 import Matching
 import Search
-import TestFlows
+import Testing
 
-extension SearchFlowSuite {
-    static var frontierConvergenceFlow: TestFlow {
-        TestFlow(
+extension SearchTestSuite {
+    static var frontierConvergenceSuite: TestSuite {
+        TestSuite(
             "search-frontier-convergence",
             tags: [
                 "search",
@@ -12,7 +12,7 @@ extension SearchFlowSuite {
                 "convergence",
             ]
         ) {
-            Step(
+            Test(
                 "nearby independent probes merge into one candidate region"
             ) {
                 let corpus = SearchCorpus(
@@ -81,8 +81,8 @@ extension SearchFlowSuite {
         }
     }
 
-    static var frontierSeparationFlow: TestFlow {
-        TestFlow(
+    static var frontierSeparationSuite: TestSuite {
+        TestSuite(
             "search-frontier-separation",
             tags: [
                 "search",
@@ -90,7 +90,7 @@ extension SearchFlowSuite {
                 "separation",
             ]
         ) {
-            Step(
+            Test(
                 "distant evidence remains separate candidate regions"
             ) {
                 let corpus = SearchCorpus(
@@ -152,8 +152,8 @@ extension SearchFlowSuite {
         }
     }
 
-    static var frontierDocumentDiversityFlow: TestFlow {
-        TestFlow(
+    static var frontierDocumentDiversitySuite: TestSuite {
+        TestSuite(
             "search-frontier-document-diversity",
             tags: [
                 "search",
@@ -161,7 +161,7 @@ extension SearchFlowSuite {
                 "diversity",
             ]
         ) {
-            Step(
+            Test(
                 "optional per-document cap preserves globally ranked diversity"
             ) {
                 let corpus = SearchCorpus(

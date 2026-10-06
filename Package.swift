@@ -15,7 +15,7 @@ let package = Package(
         ),
         .executable(
             name: "searchtest",
-            targets: ["SearchTestFlows"]
+            targets: ["SearchTests"]
         ),
     ],
     dependencies: [
@@ -25,7 +25,7 @@ let package = Package(
         .package(url: "https://github.com/leviouwendijk/Ranking.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/Fuzzy.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/Parsing.git", branch: "master"),
-        .package(url: "https://github.com/leviouwendijk/TestFlows.git", branch: "master"),
+        .package(url: "https://github.com/leviouwendijk/Testing.git", branch: "master"),
     ],
     targets: [
         .target(
@@ -40,14 +40,15 @@ let package = Package(
             ]
         ),
         .executableTarget(
-            name: "SearchTestFlows",
+            name: "SearchTests",
             dependencies: [
                 "Search",
                 .product(name: "Matching", package: "Matching"),
                 .product(name: "Position", package: "Position"),
                 .product(name: "Parsing", package: "Parsing"),
-                .product(name: "TestFlows", package: "TestFlows"),
-            ]
+                .product(name: "Testing", package: "Testing"),
+            ],
+            path: "Testing/SearchTests"
         ),
     ]
 )

@@ -1,11 +1,11 @@
 import Matching
 import Parsing
 import Search
-import TestFlows
+import Testing
 
-extension SearchFlowSuite {
-    static var structuralProofFlow: TestFlow {
-        TestFlow(
+extension SearchTestSuite {
+    static var structuralProofSuite: TestSuite {
+        TestSuite(
             "search-structural-proof",
             tags: [
                 "search",
@@ -15,7 +15,7 @@ extension SearchFlowSuite {
                 "position",
             ]
         ) {
-            Step(
+            Test(
                 "structural proof removes textual false positives"
             ) {
                 let corpus = SearchCorpus(
@@ -102,7 +102,7 @@ extension SearchFlowSuite {
                 )
             }
 
-            Step(
+            Test(
                 "proof scans only the converged candidate line region and rebases ranges"
             ) {
                 let source = """
@@ -181,7 +181,7 @@ extension SearchFlowSuite {
                 )
             }
 
-            Step(
+            Test(
                 "grammar references and cardinality remain Parsing-owned proof semantics"
             ) {
                 let corpus = SearchCorpus(

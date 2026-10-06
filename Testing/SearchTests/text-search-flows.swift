@@ -1,11 +1,11 @@
 import Matching
 import Position
 import Search
-import TestFlows
+import Testing
 
-extension SearchFlowSuite {
-    static var textRangeFlow: TestFlow {
-        TestFlow(
+extension SearchTestSuite {
+    static var textRangeSuite: TestSuite {
+        TestSuite(
             "text-search-ranges",
             tags: [
                 "search",
@@ -14,7 +14,7 @@ extension SearchFlowSuite {
                 "contains",
             ]
         ) {
-            Step(
+            Test(
                 "contains returns every occurrence with canonical character offsets"
             ) {
                 let corpus = SearchCorpus(
@@ -79,8 +79,8 @@ extension SearchFlowSuite {
         }
     }
 
-    static var queryConvergenceFlow: TestFlow {
-        TestFlow(
+    static var queryConvergenceSuite: TestSuite {
+        TestSuite(
             "text-search-query-convergence",
             tags: [
                 "search",
@@ -89,7 +89,7 @@ extension SearchFlowSuite {
                 "convergence",
             ]
         ) {
-            Step(
+            Test(
                 "independent query evidence converges on the strongest document"
             ) {
                 let corpus = SearchCorpus(
@@ -150,8 +150,8 @@ extension SearchFlowSuite {
         }
     }
 
-    static var fuzzyFlow: TestFlow {
-        TestFlow(
+    static var fuzzySuite: TestSuite {
+        TestSuite(
             "text-search-fuzzy",
             tags: [
                 "search",
@@ -159,7 +159,7 @@ extension SearchFlowSuite {
                 "ranking",
             ]
         ) {
-            Step(
+            Test(
                 "fuzzy search reuses the shared Matching Fuzzy Ranking stack"
             ) {
                 let corpus = SearchCorpus(

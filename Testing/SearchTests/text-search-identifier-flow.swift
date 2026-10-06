@@ -1,9 +1,9 @@
 import Search
-import TestFlows
+import Testing
 
-extension SearchFlowSuite {
-    static var identifierRangeFlow: TestFlow {
-        TestFlow(
+extension SearchTestSuite {
+    static var identifierRangeSuite: TestSuite {
+        TestSuite(
             "text-search-identifier-ranges",
             tags: [
                 "search",
@@ -12,7 +12,7 @@ extension SearchFlowSuite {
                 "position",
             ]
         ) {
-            Step(
+            Test(
                 "identifier matching accepts bounded source identifiers and rejects embedded components"
             ) {
                 let corpus = SearchCorpus(
@@ -72,7 +72,7 @@ extension SearchFlowSuite {
                 )
             }
 
-            Step(
+            Test(
                 "identifier matching preserves ordinary case policy"
             ) {
                 let corpus = SearchCorpus(
@@ -107,7 +107,7 @@ extension SearchFlowSuite {
                 )
             }
 
-            Step(
+            Test(
                 "identifier matching rejects punctuated queries rather than becoming contains"
             ) {
                 let corpus = SearchCorpus(

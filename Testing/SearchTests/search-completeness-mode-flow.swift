@@ -1,10 +1,10 @@
 import Matching
 import Search
-import TestFlows
+import Testing
 
-extension SearchFlowSuite {
-    static var completenessModeFlow: TestFlow {
-        TestFlow(
+extension SearchTestSuite {
+    static var completenessModeSuite: TestSuite {
+        TestSuite(
             "search-completeness-modes",
             tags: [
                 "search",
@@ -41,7 +41,7 @@ extension SearchFlowSuite {
                 ),
             ]
 
-            Step(
+            Test(
                 "ranked search sees the complete admitted document universe before frontier delivery"
             ) {
                 let result = TextSearch.search(
@@ -127,7 +127,7 @@ extension SearchFlowSuite {
                 )
             }
 
-            Step(
+            Test(
                 "exhaustive search preserves every candidate region and ignores diversity suppression"
             ) {
                 let result = TextSearch.search(
@@ -208,7 +208,7 @@ extension SearchFlowSuite {
                 )
             }
 
-            Step(
+            Test(
                 "frontier pagination slices the deterministic semantic candidate universe"
             ) {
                 let rankedResult = TextSearch.search(
@@ -380,7 +380,7 @@ extension SearchFlowSuite {
                 )
             }
 
-            Step(
+            Test(
                 "direct SearchResult hit delivery reports upstream truncation explicitly"
             ) {
                 let result = TextSearch.search(
