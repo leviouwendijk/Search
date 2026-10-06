@@ -16,5 +16,6 @@ enum SearchTestSuite {
         completenessModeSuite
         lexicalSearchSuite
         structuralProofSuite
+        structuralAccelerationSuite
     }
 }

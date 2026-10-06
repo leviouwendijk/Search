@@ -27,13 +27,27 @@ public extension SearchFrontier {
     }
 }
 
+public extension SearchFrontier {
+    func prove(
+        in corpus: SearchCorpus<ID>,
+        with parser: StructuredParser.Compiled,
+        requiring cardinality: StructuredParser.Cardinality = .atLeast(1)
+    ) throws -> SearchProofResult<ID> {
+        try proveCompiled(
+            in: corpus,
+            with: parser,
+            requiring: cardinality
+        )
+    }
+}
+
 private extension SearchFrontier {
     struct ProofRegion {
         let text: String
         let startOffset: Int
     }
 
-    func prove(
+    func proveCompiled(
         in corpus: SearchCorpus<ID>,
         with parser: StructuredParser.Compiled,
         requiring cardinality: StructuredParser.Cardinality
