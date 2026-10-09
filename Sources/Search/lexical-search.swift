@@ -12,9 +12,10 @@ public enum LexicalSearch {
         var matchedDocuments: Set<ID> = []
 
         for document in corpus.documents {
-            let documentMatches = matches(
+            let documentMatches = indexedMatches(
                 pattern,
                 in: document,
+                tokens: tokenize(document.text),
                 caseSensitive: caseSensitive
             )
 
@@ -36,6 +37,25 @@ public enum LexicalSearch {
             matches: collectedMatches
         )
     }
+
+    // Shared by stateless search and retained revision-aware indexes.
+    static func tokenize(_ text: String) -> [LexedToken] {
+        lex(text)
+    }
+
+    static func indexedMatches<ID: Hashable & Sendable>(
+        _ pattern: LexicalPattern,
+        in document: SearchDocument<ID>,
+        tokens: [LexedToken],
+        caseSensitive: Bool
+    ) -> [LexicalMatch<ID>] {
+        matchTokens(
+            pattern,
+            in: document,
+            tokens: tokens,
+            caseSensitive: caseSensitive
+        )
+    }
 }
 
 private extension LexicalSearch {
@@ -50,15 +70,12 @@ private extension LexicalSearch {
         let endTokenIndex: Int
     }
 
-    static func matches<ID: Hashable & Sendable>(
+    static func matchTokens<ID: Hashable & Sendable>(
         _ pattern: LexicalPattern,
         in document: SearchDocument<ID>,
+        tokens: [LexedToken],
         caseSensitive: Bool
     ) -> [LexicalMatch<ID>] {
-        let tokens = lex(
-            document.text
-        )
-
         guard !tokens.isEmpty else {
             return []
         }
