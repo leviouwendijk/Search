@@ -1,5 +1,5 @@
 {
-  "originHash" : "3274226c2eab51c57a1d6a39295c36da1427d7da91538797768e22428f7d4c54",
+  "originHash" : "411676cc34eee2a149ef0119447e04936fb86531d1e6266fd61d4924626e874f",
   "pins" : [
     {
       "identity" : "atomos",
@@ -34,7 +34,7 @@
       "location" : "https://github.com/leviouwendijk/Parsing.git",
       "state" : {
         "branch" : "master",
-        "revision" : "6c72ab2423ec71ce2e30fb473d088e328f7b7d65"
+        "revision" : "cdd48e8533846308b01a9ced4424568bd0ab98bb"
       }
     },
     {
@@ -43,7 +43,16 @@
       "location" : "https://github.com/leviouwendijk/Position.git",
       "state" : {
         "branch" : "master",
-        "revision" : "f4b2a54d00898e52111ac452b851cb00cf9538aa"
+        "revision" : "6c06f1b941553030a1992479783bc24b457aaccc"
+      }
+    },
+    {
+      "identity" : "primitives",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/leviouwendijk/Primitives.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "93f06221b2835f3e4a378824cde2e5752c900ba5"
       }
     },
     {
@@ -53,6 +62,15 @@
       "state" : {
         "branch" : "master",
         "revision" : "2ef45291376aa3b4e868d963acde506891be4769"
+      }
+    },
+    {
+      "identity" : "schema",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/leviouwendijk/Schema.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "a3b2d62e52cb7e061d5a5cdadb63f4d31684dd4d"
       }
     },
     {

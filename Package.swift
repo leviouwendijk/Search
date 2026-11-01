@@ -17,6 +17,10 @@ let package = Package(
             name: "searchtest",
             targets: ["SearchTests"]
         ),
+        .executable(
+            name: "structuredquerytest",
+            targets: ["StructuredQueryTests"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/leviouwendijk/Position.git", branch: "master"),
@@ -49,6 +53,11 @@ let package = Package(
                 .product(name: "Testing", package: "Testing"),
             ],
             path: "Testing/SearchTests"
+        ),
+        .executableTarget(
+            name: "StructuredQueryTests",
+            dependencies: ["Search"],
+            path: "Testing/StructuredQueryTests"
         ),
     ]
 )
