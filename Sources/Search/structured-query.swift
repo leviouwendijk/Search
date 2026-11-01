@@ -1,4 +1,5 @@
 import Foundation
+import Schema
 
 public enum StructuredValue: Sendable, Codable, Hashable {
     case text(String)

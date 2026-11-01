@@ -29,6 +29,8 @@ let package = Package(
         .package(url: "https://github.com/leviouwendijk/Ranking.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/Fuzzy.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/Parsing.git", branch: "master"),
+        .package(url: "https://github.com/leviouwendijk/Schema.git", branch: "master"),
+        .package(url: "https://github.com/leviouwendijk/Primitives.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/Testing.git", branch: "master"),
     ],
     targets: [
@@ -41,6 +43,7 @@ let package = Package(
                 .product(name: "Ranking", package: "Ranking"),
                 .product(name: "Fuzzy", package: "Fuzzy"),
                 .product(name: "Parsing", package: "Parsing"),
+                .product(name: "Schema", package: "Schema"),
             ]
         ),
         .executableTarget(
@@ -56,8 +59,39 @@ let package = Package(
         ),
         .executableTarget(
             name: "StructuredQueryTests",
-            dependencies: ["Search"],
+            dependencies: [
+                "Search",
+                .product(name: "Schema", package: "Schema"),
+                .product(name: "Primitives", package: "Primitives"),
+            ],
             path: "Testing/StructuredQueryTests"
         ),
     ]
 )
+
+for target in package.targets {
+    switch target.type {
+    case .regular, .executable, .test, .macro:
+        var settings = target.swiftSettings ?? []
+
+        settings.append(
+            .treatAllWarnings(as: .error)
+        )
+
+        settings.append(
+            .unsafeFlags(
+                [
+                    "-continue-building-after-errors"
+                ]
+            )
+        )
+
+        target.swiftSettings = settings
+
+    case .plugin, .system, .binary:
+        break
+
+    @unknown default:
+        break
+    }
+}

@@ -122,6 +122,8 @@ struct StructuredQueryTests {
             )
         }
 
+        try StructuredQuerySchemaRegression.run()
+
         print("structuredquerytest: passed")
     }
 
