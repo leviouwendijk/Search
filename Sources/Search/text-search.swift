@@ -255,6 +255,13 @@ private extension TextSearch {
                     query: query,
                     against: document
                 )
+
+        case .regex:
+            return RegexMatcher<SearchDocument<ID>>()
+                .match(
+                    query: query,
+                    against: document
+                )
         }
     }
 

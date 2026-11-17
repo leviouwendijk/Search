@@ -1,5 +1,5 @@
 {
-  "originHash" : "411676cc34eee2a149ef0119447e04936fb86531d1e6266fd61d4924626e874f",
+  "originHash" : "0749595db9492e659e5ee0abc7b1a4acd3fbbe6741af7934b24bc8ce5398cc8f",
   "pins" : [
     {
       "identity" : "atomos",
@@ -25,7 +25,7 @@
       "location" : "https://github.com/leviouwendijk/Matching.git",
       "state" : {
         "branch" : "master",
-        "revision" : "5ac7de66e96468fb00a5fb5748fd85101a009968"
+        "revision" : "21573514e18d7ef62c10d7736188e3397c538b92"
       }
     },
     {
