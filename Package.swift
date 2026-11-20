@@ -13,14 +13,6 @@ let package = Package(
             name: "Search",
             targets: ["Search"]
         ),
-        .executable(
-            name: "searchtest",
-            targets: ["SearchTests"]
-        ),
-        .executable(
-            name: "structuredquerytest",
-            targets: ["StructuredQueryTests"]
-        ),
     ],
     dependencies: [
         .package(url: "https://github.com/leviouwendijk/Position.git", branch: "master"),
@@ -30,8 +22,6 @@ let package = Package(
         .package(url: "https://github.com/leviouwendijk/Fuzzy.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/Parsing.git", branch: "master"),
         .package(url: "https://github.com/leviouwendijk/Schema.git", branch: "master"),
-        .package(url: "https://github.com/leviouwendijk/Primitives.git", branch: "master"),
-        .package(url: "https://github.com/leviouwendijk/Testing.git", branch: "master"),
     ],
     targets: [
         .target(
@@ -45,26 +35,6 @@ let package = Package(
                 .product(name: "Parsing", package: "Parsing"),
                 .product(name: "Schema", package: "Schema"),
             ]
-        ),
-        .executableTarget(
-            name: "SearchTests",
-            dependencies: [
-                "Search",
-                .product(name: "Matching", package: "Matching"),
-                .product(name: "Position", package: "Position"),
-                .product(name: "Parsing", package: "Parsing"),
-                .product(name: "Testing", package: "Testing"),
-            ],
-            path: "Testing/SearchTests"
-        ),
-        .executableTarget(
-            name: "StructuredQueryTests",
-            dependencies: [
-                "Search",
-                .product(name: "Schema", package: "Schema"),
-                .product(name: "Primitives", package: "Primitives"),
-            ],
-            path: "Testing/StructuredQueryTests"
         ),
     ]
 )
