@@ -7,6 +7,7 @@ enum SearchTestSuite {
     ) {
         textRangeSuite
         identifierRangeSuite
+        candidateSourceSuite
         probeSemanticsSuite
         queryConvergenceSuite
         fuzzySuite

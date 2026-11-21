@@ -20,15 +20,19 @@ public struct SearchProbe:
     public let query: SearchQuery
     public let role: SearchProbeRole
     public let strategy: SearchStrategy
+    /// Match only this field of a candidate; every field when nil.
+    public let field: String?
 
     public init(
         _ query: SearchQuery,
         role: SearchProbeRole = .preferred,
-        strategy: SearchStrategy = .fuzzy
+        strategy: SearchStrategy = .fuzzy,
+        field: String? = nil
     ) {
         self.query = query
         self.role = role
         self.strategy = strategy
+        self.field = field
     }
 
     public init(
@@ -36,7 +40,8 @@ public struct SearchProbe:
         id: String? = nil,
         weight: Int = 1,
         role: SearchProbeRole = .preferred,
-        strategy: SearchStrategy = .fuzzy
+        strategy: SearchStrategy = .fuzzy,
+        field: String? = nil
     ) {
         self.init(
             SearchQuery(
@@ -45,7 +50,8 @@ public struct SearchProbe:
                 weight: weight
             ),
             role: role,
-            strategy: strategy
+            strategy: strategy,
+            field: field
         )
     }
 

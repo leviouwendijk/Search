@@ -135,15 +135,13 @@ private extension LexicalSearch {
     static func lex(
         _ text: String
     ) -> [LexedToken] {
-        var options = LexerOptions()
-        options.identifier_continuation = .punctuation_delimited
-        options.emit_whitespace = false
-        options.emit_newlines = false
-        options.emit_comments = false
+        var options = Lexer.Options()
+        options.identifier = .punctuation_delimited
+        options.emit = .init(whitespace: false, newlines: false, comments: false)
 
         var lexer = Lexer(
             source: text,
-            sets: LexingSets(
+            sets: Lexer.Vocabulary(
                 keywords: []
             ),
             options: options

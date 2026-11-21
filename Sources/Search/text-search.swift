@@ -57,6 +57,32 @@ public enum TextSearch {
         in corpus: SearchCorpus<ID>,
         options: SearchOptions = .defaults
     ) -> SearchResult<ID> {
+        search(
+            probes: probes,
+            in: corpus.documents,
+            options: options
+        )
+    }
+
+    /// Searches any source's candidates across their fields; a probe with a
+    /// `field` matches that field only.
+    public static func search<Source: CandidateSource>(
+        probes: [SearchProbe],
+        in source: Source,
+        options: SearchOptions = .defaults
+    ) -> SearchResult<Source.Candidate.MatchID> {
+        search(
+            probes: probes,
+            in: source.candidates(),
+            options: options
+        )
+    }
+
+    public static func search<Candidate: MatchCandidate>(
+        probes: [SearchProbe],
+        in candidates: [Candidate],
+        options: SearchOptions = .defaults
+    ) -> SearchResult<Candidate.MatchID> {
         let probes = probes.filter {
             !$0.isEmpty
         }
@@ -68,11 +94,11 @@ public enum TextSearch {
             }
         }
 
-        var accumulators = corpus.documents
+        var accumulators = candidates
             .enumerated()
             .map { element in
                 TextSearchAccumulator(
-                    documentID: element.element.id,
+                    documentID: element.element.matchID,
                     sourceOrder: element.offset
                 )
             }
@@ -89,8 +115,15 @@ public enum TextSearch {
             for (
                 index,
                 document
-            ) in corpus.documents.enumerated() {
-                let result = match(
+            ) in candidates.enumerated() {
+                let result = probe.field.map { field in
+                    match(
+                        matchQuery,
+                        against: FieldScopedCandidate(document, field: field),
+                        strategy: probe.strategy,
+                        options: options
+                    )
+                } ?? match(
                     matchQuery,
                     against: document,
                     strategy: probe.strategy,
@@ -113,10 +146,7 @@ public enum TextSearch {
                     )
 
                     let spans = resolvedSpans(
-                        for: result,
-                        query: matchQuery,
-                        document: document,
-                        options: options
+                        for: result
                     )
 
                     accumulators[index].append(
@@ -168,7 +198,7 @@ public enum TextSearch {
                 $0.score
             )
         }
-        let selected: [Ranked<SearchHit<ID>>]
+        let selected: [Ranked<SearchHit<Candidate.MatchID>>]
 
         switch options.mode {
         case .ranked:
@@ -199,7 +229,7 @@ public enum TextSearch {
         return SearchResult(
             mode: options.mode,
             probes: probes,
-            searchedDocumentCount: corpus.count,
+            searchedDocumentCount: candidates.count,
             matchedDocumentCount: admitted.count,
             hits: selected.map(\.value)
         )
@@ -207,57 +237,57 @@ public enum TextSearch {
 }
 
 private extension TextSearch {
-    static func match<ID: Hashable & Sendable>(
+    static func match<Candidate: MatchCandidate>(
         _ query: MatchQuery,
-        against document: SearchDocument<ID>,
+        against document: Candidate,
         strategy: SearchStrategy,
         options: SearchOptions
-    ) -> MatchResult<ID> {
+    ) -> MatchResult<Candidate.MatchID> {
         switch strategy {
         case .exact:
-            return ExactMatcher<SearchDocument<ID>>()
+            return ExactMatcher<Candidate>()
                 .match(
                     query: query,
                     against: document
                 )
 
         case .prefix:
-            return PrefixMatcher<SearchDocument<ID>>()
+            return PrefixMatcher<Candidate>()
                 .match(
                     query: query,
                     against: document
                 )
 
         case .contains:
-            return ContainsMatcher<SearchDocument<ID>>()
+            return ContainsMatcher<Candidate>()
                 .match(
                     query: query,
                     against: document
                 )
 
         case .identifier:
-            return IdentifierMatcher<SearchDocument<ID>>()
+            return IdentifierMatcher<Candidate>()
                 .match(
                     query: query,
                     against: document
                 )
 
         case .subsequence:
-            return SubsequenceMatcher<SearchDocument<ID>>()
+            return SubsequenceMatcher<Candidate>()
                 .match(
                     query: query,
                     against: document
                 )
 
         case .fuzzy:
-            return FuzzyMatcher<SearchDocument<ID>>()
+            return FuzzyMatcher<Candidate>()
                 .match(
                     query: query,
                     against: document
                 )
 
         case .regex:
-            return RegexMatcher<SearchDocument<ID>>()
+            return RegexMatcher<Candidate>()
                 .match(
                     query: query,
                     against: document
@@ -328,19 +358,13 @@ private extension TextSearch {
     }
 
     static func resolvedSpans<ID: Hashable & Sendable>(
-        for result: MatchResult<ID>,
-        query: MatchQuery,
-        document: SearchDocument<ID>,
-        options: SearchOptions
+        for result: MatchResult<ID>
     ) -> [SearchSpan] {
         return result.fieldResults
-            .filter {
-                $0.field.name == "text"
-            }
             .flatMap { fieldResult in
                 MatchPositionResolver.lineSpans(
                     for: fieldResult,
-                    in: document.text
+                    in: fieldResult.field.text
                 )
                 .map { span in
                     SearchSpan(
@@ -352,7 +376,8 @@ private extension TextSearch {
                                 span.matchRange.endOffset
                             )
                         ),
-                        lineRange: span.lineRange
+                        lineRange: span.lineRange,
+                        field: fieldResult.field.name
                     )
                 }
             }
