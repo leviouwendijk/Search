@@ -15,13 +15,13 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/leviouwendijk/Position.git", branch: "master"),
+        .package(url: "https://github.com/swift-lco/Position.git", branch: "master"),
         .package(url: "https://github.com/swift-langs/Tokens.git", branch: "master"),
-        .package(url: "https://github.com/leviouwendijk/Matching.git", branch: "master"),
-        .package(url: "https://github.com/leviouwendijk/Ranking.git", branch: "master"),
-        .package(url: "https://github.com/leviouwendijk/Fuzzy.git", branch: "master"),
+        .package(url: "https://github.com/swift-lco/Matching.git", branch: "master"),
+        .package(url: "https://github.com/swift-lco/Ranking.git", branch: "master"),
+        .package(url: "https://github.com/swift-lco/Fuzzy.git", branch: "master"),
         .package(url: "https://github.com/swift-langs/Parsing.git", branch: "master"),
-        .package(url: "https://github.com/leviouwendijk/Schema.git", branch: "master"),
+        .package(url: "https://github.com/swift-lco/Schema.git", branch: "master"),
     ],
     targets: [
         .target(
